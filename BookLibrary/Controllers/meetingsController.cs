@@ -1,4 +1,6 @@
-﻿using BookLibrary.Entities;
+﻿using BookLibrary.Domain.Entities;
+using BookLibrary.Domain.Repositories.Abstract;
+using BookLibrary.Models;
 using ICSSoft.STORMNET;
 using ICSSoft.STORMNET.Business;
 using ICSSoft.STORMNET.Business.LINQProvider;
@@ -16,80 +18,51 @@ namespace BookLibrary.Controllers
     [ApiController]
     public class meetingsController : ControllerBase
     {
-        SQLDataService ds = (SQLDataService)DataServiceProvider.DataService;
+        IMeeting dataContext;
+        public meetingsController(IMeeting dataContext)
+        {
+            this.dataContext = dataContext;
+        }
 
         // GET: api/<meetingsController>
         [HttpGet]
         public IEnumerable<meeting> Get()
         {
-            var meetings = ds.Query<meeting>(meeting.Views.meetingL).ToList();
-            return meetings;
+            return dataContext.getAll();
         }
 
         // GET api/<meetingsController>/5
         [HttpGet("{id}")]
         public meeting Get(Guid id)
         {
-            try
-            {
-                meeting _meeting = new meeting();
-                _meeting.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(_meeting);
-                return _meeting;
-            }
-            catch
-            {
-
-            }
-            return null;
+            return dataContext.getId(id);
         }
 
         // POST api/<meetingsController>
         [HttpPost]
         [Authorize]
-        public void Post([FromBody] meeting _meeting)
+        public IActionResult Post([FromBody] MeetingModel _meeting)
         {
-            ds.UpdateObject(_meeting);//Добавить Объект
+           var newMeeting = dataContext.add(_meeting);
+           return Ok(new { __PrimaryKey = new { guid = newMeeting.__PrimaryKey } });
         }
 
         // PUT api/<meetingsController>/5
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [Authorize]
-        public void Put(Guid id, [FromBody] meeting _meeting)
+        public void Patch(Guid id, object _meeting)
         {
-            try
-            {
-                meeting Meeting = new meeting();
-                Meeting.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(Meeting);
-                Meeting.SetProperties(_meeting);
-                Meeting.SetStatus(ObjectStatus.Altered);
-                ds.UpdateObject(Meeting);//Добавить Объект
-            }
-            catch
-            {
-
-            }
+            // dataContext.update(id, _meeting);
+            var asd = 555;
         }
 
         // DELETE api/<meetingsController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            try
-            {
-                meeting Meeting = new meeting();
-                Meeting.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(Meeting);
-
-                Meeting.SetStatus(ObjectStatus.Deleted);
-                ds.UpdateObject(Meeting);
-            }
-            catch
-            {
-
-            }
+            dataContext.delete(id);
+            return Ok(new { __PrimaryKey = new { guid = id } });
         }
     }
 }

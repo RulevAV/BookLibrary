@@ -1,4 +1,5 @@
-﻿using BookLibrary.Entities;
+﻿using BookLibrary.Domain.Entities;
+using BookLibrary.Domain.Repositories.Abstract;
 using ICSSoft.STORMNET;
 using ICSSoft.STORMNET.Business;
 using ICSSoft.STORMNET.Business.LINQProvider;
@@ -16,38 +17,30 @@ namespace BookLibrary.Controllers
     [ApiController]
     public class reportsController : ControllerBase
     {
-        SQLDataService ds = (SQLDataService)DataServiceProvider.DataService;
+        IReport dataContext;
+        public reportsController(IReport dataContext)
+        {
+            this.dataContext = dataContext;
+        }
 
-        // GET: api/<reportsController>
+        // GET
         [HttpGet]
         public IEnumerable<report> Get()
         {
-            var reports = ds.Query<report>(report.Views.reportL).ToList();
-            return reports;
+            return dataContext.getAll();
         }
 
-        // GET api/<reportsController>/5
+        // GET
         [HttpGet("{id}")]
         public report Get(Guid id)
         {
-            try
-            {
-                report _report = new report();
-                _report.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(_report);
-                return _report;
-            }
-            catch
-            {
-
-            }
-            return null;
+            return dataContext.getId(id);
         }
 
-        // POST api/<reportsController>
+        // POST
         [HttpPost]
         [Authorize]
-        public void Post([FromBody] report _report)
+        public IActionResult Post(object _report)
         {
             var _book = new book();
             var _meeting = new meeting();
@@ -59,46 +52,26 @@ namespace BookLibrary.Controllers
 
             //var p = new DataObject[] { _report, _book, _meeting , _speaker };
 
-            ds.UpdateObject(_report);//Добавить Объект
+           // dataContext.add(_report);
+            return Ok();
         }
 
-        // PUT api/<reportsController>/5
-        [HttpPut("{id}")]
-        public void Put(Guid id, [FromBody] report _report)
+        // PUT
+        [HttpPatch("{id}")]
+        public IActionResult Putch(Guid id, object _report)
         {
-            try
-            {
-                report Report = new report();
-                Report.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(Report);
-                Report.SetProperties(_report);
-                Report.SetStatus(ObjectStatus.Altered);
-                ds.UpdateObject(Report);//Добавить Объект
-            }
-            catch
-            {
-
-            }
+           // dataContext.update(id, _report);
+           // return Ok(new { __PrimaryKey = new { guid = id } });
+           return Ok();
         }
 
-        // DELETE api/<reportsController>/5
+        // DELETE
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            try
-            {
-                report Report = new report();
-                Report.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(Report);
-
-                Report.SetStatus(ObjectStatus.Deleted);
-                ds.UpdateObject(Report);
-            }
-            catch
-            {
-
-            }
+            dataContext.delete(id);
+            return Ok(new { __PrimaryKey = new { guid = id } });
         }
     }
 }

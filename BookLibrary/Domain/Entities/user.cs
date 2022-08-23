@@ -1,6 +1,6 @@
 ﻿using ICSSoft.STORMNET;
 
-namespace BookLibrary.Entities
+namespace BookLibrary.Domain.Entities
 {
     [View("userL", new string[] { "email", "username", "password" })]
     public class user : ICSSoft.STORMNET.DataObject
@@ -9,7 +9,7 @@ namespace BookLibrary.Entities
         public string username { get; set; }
         public string password { get; set; }
 
-        private BookLibrary.Entities.DetailArrayOfBooks fbooks;
+        private BookLibrary.Domain.Entities.DetailArrayOfBooks fbooks;
         public void SetProperties(user _user)
         {
             this.email = _user.email;
@@ -26,20 +26,20 @@ namespace BookLibrary.Entities
             {
                 get
                 {
-                    return ICSSoft.STORMNET.Information.GetView("userL", typeof(BookLibrary.Entities.user));
+                    return ICSSoft.STORMNET.Information.GetView("userL", typeof(BookLibrary.Domain.Entities.user));
                 }
             }
         }
 
-        public virtual BookLibrary.Entities.DetailArrayOfBooks books
+        public virtual BookLibrary.Domain.Entities.DetailArrayOfBooks books
         {
             get
             {
                 if ((this.fbooks == null))
                 {
-                    this.fbooks = new BookLibrary.Entities.DetailArrayOfBooks(this);
+                    this.fbooks = new BookLibrary.Domain.Entities.DetailArrayOfBooks(this);
                 }
-                BookLibrary.Entities.DetailArrayOfBooks result = this.fbooks;
+                BookLibrary.Domain.Entities.DetailArrayOfBooks result = this.fbooks;
                 return result;
             }
             set

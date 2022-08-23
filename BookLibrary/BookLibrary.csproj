@@ -6,9 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="6.0.2" />
+    <PackageReference Include="FluentAssertions" Version="6.7.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.8" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Moq" Version="4.18.2" />
     <PackageReference Include="NewPlatform.Flexberry.LockService" Version="3.0.0" />
     <PackageReference Include="NewPlatform.Flexberry.LogService.Objects" Version="4.0.0" />
     <PackageReference Include="NewPlatform.Flexberry.ORM" Version="6.0.0" />

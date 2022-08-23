@@ -1,6 +1,6 @@
 ﻿using ICSSoft.STORMNET;
 
-namespace BookLibrary.Entities
+namespace BookLibrary.Domain.Entities
 {
     [View("speakerL", new string[] { "firstName", "lastName", "patronymic", /*"primarykey as \'id\'"*/ })]
     public class speaker : ICSSoft.STORMNET.DataObject
@@ -10,7 +10,7 @@ namespace BookLibrary.Entities
         public string lastName { get; set; }
         public string patronymic { get; set; }
 
-        private BookLibrary.Entities.DetailArrayOfReports freport;
+        private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
 
         public void SetProperties(speaker _speaker)
         {
@@ -19,15 +19,15 @@ namespace BookLibrary.Entities
             this.patronymic = _speaker.patronymic;
         }
 
-        public virtual BookLibrary.Entities.DetailArrayOfReports reports
+        public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
         {
             get
             {
                 if ((this.freport == null))
                 {
-                    this.freport = new BookLibrary.Entities.DetailArrayOfReports(this);
+                    this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
                 }
-                BookLibrary.Entities.DetailArrayOfReports result = this.freport;
+                BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
                 return result;
             }
             set
@@ -45,7 +45,7 @@ namespace BookLibrary.Entities
             {
                 get
                 {
-                    return ICSSoft.STORMNET.Information.GetView("speakerL", typeof(BookLibrary.Entities.speaker));
+                    return ICSSoft.STORMNET.Information.GetView("speakerL", typeof(BookLibrary.Domain.Entities.speaker));
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using BookLibrary.Entities;
+﻿using BookLibrary.Domain.Entities;
+using BookLibrary.Domain.Repositories.Abstract;
 using ICSSoft.STORMNET;
 using ICSSoft.STORMNET.Business;
 using ICSSoft.STORMNET.Business.LINQProvider;
@@ -15,40 +16,31 @@ namespace BookLibrary.Controllers
     [ApiController]
     public class errorsController : ControllerBase
     {
-        SQLDataService ds = (SQLDataService)DataServiceProvider.DataService;
+        IError dataContext;
+        public errorsController(IError dataContext)
+        {
+            this.dataContext = dataContext;
+        }
 
         // GET: api/<errorsController>
         [HttpGet]
         public IEnumerable<error> Get()
         {
-            var errors = ds.Query<error>(error.Views.errorL).ToList();
-            return errors;
+            return dataContext.getAll();
         }
 
         // GET api/<errorsController>/5
         [HttpGet("{id}")]
         public error Get(Guid id)
         {
-            try
-            {
-                error _error = new error();
-                _error.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(_error);
-                return _error;
-            }
-            catch
-            {
-
-            }
-            return null;
+            return dataContext.getId(id);
         }
 
         // POST api/<errorsController>
         [HttpPost]
         public void Post([FromBody] error _error)
         {
-            ds.UpdateObject(_error);//Добавить Объект
+            dataContext.add(_error);
         }
-
     }
 }

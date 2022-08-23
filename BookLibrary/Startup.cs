@@ -32,6 +32,8 @@ using Unity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using BookLibrary.Service;
+using BookLibrary.Domain.Repositories.Abstract;
+using BookLibrary.Domain.Repositories.FlexberryMethod;
 
 namespace BookLibrary
 {
@@ -59,7 +61,7 @@ namespace BookLibrary
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-         .AddJwtBearer(options =>
+            .AddJwtBearer(options =>
          {
              options.RequireHttpsMetadata = false;
              options.TokenValidationParameters = new TokenValidationParameters
@@ -90,6 +92,13 @@ namespace BookLibrary
             services
                 .AddHealthChecks()
                 .AddNpgSql(OptionProject.ConectionString);
+
+            services.AddTransient<IUser, User>();
+            services.AddTransient<ISpeaker, Speaker>();
+            services.AddTransient<IReport, Report>();
+            services.AddTransient<IError, Error>();
+            services.AddTransient<IBook, Book>();
+            services.AddTransient<IMeeting, Meeting>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -113,7 +122,6 @@ namespace BookLibrary
             {
                 endpoints.MapControllers();
             });
-
         }
 
         public void ConfigureContainer(IUnityContainer container)

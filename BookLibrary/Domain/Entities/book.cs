@@ -1,9 +1,9 @@
 ﻿using ICSSoft.STORMNET;
 using System;
 
-namespace BookLibrary.Entities
+namespace BookLibrary.Domain.Entities
 {
-    [View("bookL", new string[] { "name", "author", "tags", "suauthormPages", "averageRating", "URLcover", "URLDescription" })]
+    [View("bookL", new string[] { "name", "author", "tags", "suauthormPages", "averageRating", "URLcover", "URLDescription", "user" })]
     public class book : ICSSoft.STORMNET.DataObject
     {
         public string name { get; set; }
@@ -14,9 +14,9 @@ namespace BookLibrary.Entities
         public string URLcover { get; set; }
         public string URLDescription { get; set; }
 
-        private BookLibrary.Entities.DetailArrayOfReports freport;
+        private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
 
-        private BookLibrary.Entities.user fuser;
+        private BookLibrary.Domain.Entities.user fuser;
 
         public void SetProperties(book _book)
         {
@@ -29,15 +29,15 @@ namespace BookLibrary.Entities
             this.URLDescription = _book.URLDescription;
         }
 
-        public virtual BookLibrary.Entities.DetailArrayOfReports reports
+        public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
         {
             get
             {
                 if ((this.freport == null))
                 {
-                    this.freport = new BookLibrary.Entities.DetailArrayOfReports(this);
+                    this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
                 }
-                BookLibrary.Entities.DetailArrayOfReports result = this.freport;
+                BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
                 return result;
             }
             set
@@ -49,11 +49,11 @@ namespace BookLibrary.Entities
 
         [Agregator()]
         [NotNull()]
-        public virtual BookLibrary.Entities.user user
+        public virtual BookLibrary.Domain.Entities.user user
         {
             get
             {
-                BookLibrary.Entities.user result = this.fuser;
+                BookLibrary.Domain.Entities.user result = this.fuser;
                 return result;
             }
             set
@@ -71,7 +71,7 @@ namespace BookLibrary.Entities
             {
                 get
                 {
-                    return ICSSoft.STORMNET.Information.GetView("bookL", typeof(BookLibrary.Entities.book));
+                    return ICSSoft.STORMNET.Information.GetView("bookL", typeof(BookLibrary.Domain.Entities.book));
                 }
             }
         }
@@ -80,20 +80,20 @@ namespace BookLibrary.Entities
     }
     public class DetailArrayOfBooks : ICSSoft.STORMNET.DetailArray
     {
-        public DetailArrayOfBooks(BookLibrary.Entities.user fuser) :
+        public DetailArrayOfBooks(BookLibrary.Domain.Entities.user fuser) :
                 base(typeof(book), ((ICSSoft.STORMNET.DataObject)(fuser)))
         {
         }
 
-        public BookLibrary.Entities.book this[int index]
+        public BookLibrary.Domain.Entities.book this[int index]
         {
             get
             {
-                return ((BookLibrary.Entities.book)(this.ItemByIndex(index)));
+                return ((BookLibrary.Domain.Entities.book)(this.ItemByIndex(index)));
             }
         }
 
-        public virtual void Add(BookLibrary.Entities.book dataobject)
+        public virtual void Add(BookLibrary.Domain.Entities.book dataobject)
         {
             this.AddObject(((ICSSoft.STORMNET.DataObject)(dataobject)));
         }

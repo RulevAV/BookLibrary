@@ -1,8 +1,7 @@
-﻿using BookLibrary.Entities;
+﻿using BookLibrary.Domain.Entities;
+using BookLibrary.Domain.Repositories.Abstract;
 using BookLibrary.Models;
 using BookLibrary.Service;
-using ICSSoft.STORMNET;
-using ICSSoft.STORMNET.Business;
 using ICSSoft.STORMNET.Business.LINQProvider;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,62 +16,62 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace BookLibrary.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class usersController : ControllerBase
     {
-        SQLDataService ds = (SQLDataService)DataServiceProvider.DataService;
+        IUser dataContext;
 
         private readonly IOptions<AuthOptions> authOptions;
 
-        public usersController(IOptions<AuthOptions> authOptions) {
+        public usersController(IOptions<AuthOptions> authOptions, IUser dataContext) {
             this.authOptions = authOptions;
+            this.dataContext = dataContext;
         }
 
-        // GET: api/<usersController>
+        // GET
         [HttpGet]
+        [Route("api/[controller]")]
         [Authorize]
         public IEnumerable<user> Get()
         {
-            var users = ds.Query<user>(user.Views.userL).ToList();
+            var users = dataContext.getAllUsers();
             return users;
         }
 
-        // GET api/<usersController>/5
+        // GET
         [HttpGet]
-        [Route("me")]
+        [Route("[controller]/me")]
         [Authorize]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetMe()
         {
+            var id = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
             var Email = User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault();
-            return Ok(new { Email });
+            return Ok(new { email = Email, __PrimaryKey = new { guid = id } });
         }
-
-        [Route("token")]
+        [Route("api/[controller]/token")]
         [HttpPost]
         public IActionResult token([FromBody]Login request)
         {
-            var User = AuthenticateUser(request.Email, request.Password);
+            var User = dataContext.findUser(request.Email, GetHash(request.Password));
 
             if (User != null)
             {
                 var token = GenerateJWT(User);
-
-                return Ok(new { access_token = token });
+//                {
+//                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InF3ZUBtYWlsLnJ1IiwiaWF0IjoxNjYxMTM3NTE1LCJleHAiOjE2NjExMzkzMTV9.cQ9hS8ghsarIQR4IdIoxTgL0BneX4Z9QV7bJpXAJJu0"
+//}
+                return Ok(new { token = token });
             }
 
             return Unauthorized();
         }
-
-        [Route("register")]
+        [Route("api/[controller]/register")]
         [HttpPost]
         public IActionResult register([FromBody] Register request)
         {
-            var User = RegistereUser(request.Email, request.Password, request.Username);
+            var User = dataContext.RegisterUser(request.Email, GetHash(request.Password), request.Username);
 
             if (User != null)
             {
@@ -82,30 +81,6 @@ namespace BookLibrary.Controllers
             return BadRequest(new { messages = "Данный email уже зарегистрирован!" });
         }
 
-        private user AuthenticateUser(string Email, string Password)
-        {
-            var hashPassword = GetHash(Password);
-            var User = ds.Query<user>(user.Views.userL).FirstOrDefault(u=> u.email ==Email && u.password == hashPassword);
-
-            return User;
-        }
-        private user RegistereUser(string Email, string Password, string Username)
-        {
-            var User = ds.Query<user>(user.Views.userL).FirstOrDefault(u => u.email == Email);
-
-            if (User != null)
-            {
-                return null;
-            }
-
-            var _user = new user();
-            _user.email = Email;
-            _user.password = GetHash(Password);
-            _user.username = Username;
-
-            ds.UpdateObject(_user);//Добавить Объект
-            return _user;
-        }
         private string GenerateJWT(user User)
         {
             var authParams = authOptions.Value;

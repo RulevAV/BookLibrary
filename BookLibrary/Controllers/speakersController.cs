@@ -1,14 +1,10 @@
-﻿using BookLibrary.Entities;
-using ICSSoft.STORMNET;
-using ICSSoft.STORMNET.Business;
-using ICSSoft.STORMNET.Business.LINQProvider;
+﻿using BookLibrary.Domain.Entities;
+using BookLibrary.Domain.Repositories.Abstract;
+using BookLibrary.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BookLibrary.Controllers
 {
@@ -16,80 +12,53 @@ namespace BookLibrary.Controllers
     [ApiController]
     public class speakersController : ControllerBase
     {
-        SQLDataService ds = (SQLDataService)DataServiceProvider.DataService;
+        ISpeaker dataContext;
 
-        // GET: api/<speakersController>
-        [HttpGet]
-        public IEnumerable<speaker> Get()
+        public speakersController(ISpeaker dataContext)
         {
-            var speakers = ds.Query<speaker>(speaker.Views.speakerL).ToList();
-            return speakers;
+            this.dataContext = dataContext;
         }
 
-        // GET api/<speakersController>/5
+        // GET
+        [HttpGet]
+        public IEnumerable<speaker> GetAllSpeakers()
+        {
+            return dataContext.getAll();
+        }
+
+        // GET 
         [HttpGet("{id}")]
         public speaker Get(Guid id)
         {
-            try
-            {
-                speaker _speaker = new speaker();
-                _speaker.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(_speaker);
-                return _speaker;
-            }
-            catch
-            {
-
-            }
-            return null;
+            return dataContext.getId(id);
         }
 
-        // POST api/<speakersController>
+        // POST 
         [HttpPost]
         [Authorize]
-        public void Post([FromBody] speaker _speaker)
+        public IActionResult Post([FromBody] speaker _speaker)
         {
-            ds.UpdateObject(_speaker);//Добавить Объект
+            dataContext.add(_speaker);
+            return Ok(new { __PrimaryKey = new { guid = _speaker.__PrimaryKey } });
+
         }
 
-        // PUT api/<speakersController>/5
-        [HttpPut("{id}")]
+        // Patch 
+        [HttpPatch("{id}")]
         [Authorize]
-        public void Put(Guid id, [FromBody] speaker _speaker)
+        public IActionResult Patch(Guid id, [FromBody] SpeakerModel _speaker)
         {
-            try
-            {
-                speaker Speaker = new speaker();
-                Speaker.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(Speaker);
-                Speaker.SetProperties(_speaker);
-                Speaker.SetStatus(ObjectStatus.Altered);
-                ds.UpdateObject(Speaker);//Добавить Объект
-            }
-            catch
-            {
-
-            }
+           dataContext.update( id, _speaker);
+           return Ok(new { __PrimaryKey = new { guid = id } });
         }
 
-        // DELETE api/<speakersController>/5
+        // DELETE 
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            try
-            {
-                speaker Speaker = new speaker();
-                Speaker.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(Speaker);
-
-                Speaker.SetStatus(ObjectStatus.Deleted);
-                ds.UpdateObject(Speaker);
-            }
-            catch
-            {
-
-            }
+            dataContext.delete(id);
+            return Ok(new { __PrimaryKey = new { guid = id } });
         }
     }
 }

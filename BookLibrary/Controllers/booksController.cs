@@ -1,4 +1,6 @@
-﻿using BookLibrary.Entities;
+﻿using BookLibrary.Domain.Entities;
+using BookLibrary.Domain.Repositories.Abstract;
+using BookLibrary.Models;
 using ICSSoft.STORMNET;
 using ICSSoft.STORMNET.Business;
 using ICSSoft.STORMNET.Business.LINQProvider;
@@ -10,8 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,95 +25,52 @@ namespace BookLibrary.Controllers
     [ApiController]
     public class booksController : ControllerBase
     {
-        SQLDataService ds = (SQLDataService)DataServiceProvider.DataService;
+        IBook dataContext;
+        public booksController(IBook dataContext)
+        {
+            this.dataContext = dataContext;
+        }
 
         // GET: api/<booksController>
         [HttpGet]
         public IEnumerable<book> Get()
         {
-            var books = ds.Query<book>(book.Views.bookL).ToList();
-            return books;
+            return dataContext.getAll();
         }
 
         // GET api/<booksController>/5
         [HttpGet("{id}")]
         public book Get(Guid id)
         {
-            try
-            {
-                book _book = new book();
-                _book.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(_book);
-                return _book;
-            }
-            catch
-            {
-
-            }
-            return null;
+            return dataContext.getId(id);
         }
 
         // POST api/<booksController>
         [HttpPost]
         [Authorize]
-        public void Post([FromBody] book _book)
+        public IActionResult Post([FromBody] book _book)
         {
-            _book.tags =null;
-            var _user = new user();
-            _user.books.Add(_book);
-            // var _report = new report();
-            // var _meeting = new meeting();
-            // var _speaker = new speaker();
-
-            // _meeting.dateMeeting = DateTime.Now;
-            // _book.reports.Add(_report);
-            // _meeting.reports.Add(_report);
-            //_speaker.reports.Add(_report);
-
-            var p = new DataObject[] { _book, _user };
-
-            ds.UpdateObjects(ref p);//Добавить Объект
+            var id = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
+            dataContext.add(_book, Guid.Parse(id));
+            return Ok(new { __PrimaryKey = new { guid = _book.__PrimaryKey } });
         }
 
-        // PUT api/<booksController>/5
-        [HttpPut("{id}")]
+        // Patch 
+        [HttpPatch("{id}")]
         [Authorize]
-        public void Put(Guid id, [FromBody] book _book)
+        public IActionResult Patch(Guid id, [FromBody] BookModel _book)
         {
-            try
-            {
-               _book.tags = null;
-               book Book = new book();
-               Book.SetExistObjectPrimaryKey(id);
-               ds.LoadObject(Book);
-               Book.SetProperties(_book);
-               Book.SetStatus(ObjectStatus.Altered);
-               ds.UpdateObject( Book);//Добавить Объект
-            }
-            catch
-            {
-
-            }
+            dataContext.update(id, _book);
+            return Ok(new { __PrimaryKey = new { guid = id } });
         }
 
         // DELETE api/<booksController>/5
         [HttpDelete("{id}")]
         [Authorize]
-        public void Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            try
-            {
-                book Book = new book();
-                Book.SetExistObjectPrimaryKey(id);
-                ds.LoadObject(Book);
-
-                Book.SetStatus(ObjectStatus.Deleted);
-                ds.UpdateObject(Book);
-            }
-            catch
-            {
-
-            }
+           dataContext.delete(id);
+            return Ok(new { __PrimaryKey = new { guid = id } });
         }
     }
 }

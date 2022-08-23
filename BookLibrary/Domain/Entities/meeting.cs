@@ -1,29 +1,29 @@
 ﻿using ICSSoft.STORMNET;
 using System;
 
-namespace BookLibrary.Entities
+namespace BookLibrary.Domain.Entities
 {
     [View("meetingL", new string[] { "dateMeeting"})]
     public class meeting : ICSSoft.STORMNET.DataObject
     {
         public DateTime dateMeeting { get; set; }
 
-        private BookLibrary.Entities.DetailArrayOfReports freport;
+        private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
 
         public void SetProperties(meeting _meeting)
         {
             this.dateMeeting = _meeting.dateMeeting;
         }
 
-        public virtual BookLibrary.Entities.DetailArrayOfReports reports
+        public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
         {
             get
             {
                 if ((this.freport == null))
                 {
-                    this.freport = new BookLibrary.Entities.DetailArrayOfReports(this);
+                    this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
                 }
-                BookLibrary.Entities.DetailArrayOfReports result = this.freport;
+                BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
                 return result;
             }
             set
@@ -41,7 +41,7 @@ namespace BookLibrary.Entities
             {
                 get
                 {
-                    return ICSSoft.STORMNET.Information.GetView("meetingL", typeof(BookLibrary.Entities.meeting));
+                    return ICSSoft.STORMNET.Information.GetView("meetingL", typeof(BookLibrary.Domain.Entities.meeting));
                 }
             }
         }

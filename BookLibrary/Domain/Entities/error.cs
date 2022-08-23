@@ -1,7 +1,7 @@
 ﻿using ICSSoft.STORMNET;
 using System;
 
-namespace BookLibrary.Entities
+namespace BookLibrary.Domain.Entities
 {
     [View("errorL", new string[] { "dateEerror" })]
     public class error : ICSSoft.STORMNET.DataObject
@@ -28,7 +28,7 @@ namespace BookLibrary.Entities
             {
                 get
                 {
-                    return ICSSoft.STORMNET.Information.GetView("errorL", typeof(BookLibrary.Entities.error));
+                    return ICSSoft.STORMNET.Information.GetView("errorL", typeof(BookLibrary.Domain.Entities.error));
                 }
             }
         }
