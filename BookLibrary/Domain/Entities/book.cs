@@ -1,53 +1,62 @@
-﻿using ICSSoft.STORMNET;
+﻿using BookLibrary.Models;
+using ICSSoft.STORMNET;
+using Newtonsoft.Json;
 using System;
+using System.Text.Json;
 
 namespace BookLibrary.Domain.Entities
 {
-    [View("bookL", new string[] { "name", "author", "tags", "suauthormPages", "averageRating", "URLcover", "URLDescription", "user" })]
+    [View("bookL", new string[] { "name", "author", "sumPages", "tags","averageRating", "URLcover", "URLDescription", "user", "user.email" })]
     public class book : ICSSoft.STORMNET.DataObject
     {
         public string name { get; set; }
         public string author { get; set; }
-        public int suauthormPages { get; set; }
-        public string[] tags { get; set; }
+        public int sumPages { get; set; }
+        public string tags { get; set; }
         public int averageRating { get; set; }
         public string URLcover { get; set; }
         public string URLDescription { get; set; }
 
-        private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
+        //private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
 
         private BookLibrary.Domain.Entities.user fuser;
-
-        public void SetProperties(book _book)
+        public book() {}
+        public book(BookModel value)
         {
-            this.name = _book.name;
-            this.author = _book.author;
-            this.suauthormPages = _book.suauthormPages;
-            this.tags = _book.tags;
-            this.averageRating = _book.averageRating;
-            this.URLcover = _book.URLcover;
-            this.URLDescription = _book.URLDescription;
+            name = value.name;
+            author = value.author;
+            sumPages = value.sumPages;
+            tags = JsonConvert.SerializeObject(value.tags);
+            averageRating = value.averageRating;
+            URLcover = value.urlCover;
+            URLDescription = value.urlDescription;
+            user = value.user;
         }
 
-        public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
+        public static implicit operator BookModel(book value)
         {
-            get
-            {
-                if ((this.freport == null))
-                {
-                    this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
-                }
-                BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
-                return result;
-            }
-            set
-            {
-                this.freport = value;
-            }
+            return new BookModel(value);
         }
 
+        //public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
+        //{
+        //    get
+        //    {
+        //        if ((this.freport == null))
+        //        {
+        //            this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
+        //        }
+        //        BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
+        //        return result;
+        //    }
+        //    set
+        //    {
+        //        this.freport = value;
+        //    }
+        //}
 
-        [Agregator()]
+
+        [PropertyStorage(new string[] {"user_m0"})]
         [NotNull()]
         public virtual BookLibrary.Domain.Entities.user user
         {
@@ -75,28 +84,26 @@ namespace BookLibrary.Domain.Entities
                 }
             }
         }
-
-     
     }
-    public class DetailArrayOfBooks : ICSSoft.STORMNET.DetailArray
-    {
-        public DetailArrayOfBooks(BookLibrary.Domain.Entities.user fuser) :
-                base(typeof(book), ((ICSSoft.STORMNET.DataObject)(fuser)))
-        {
-        }
+    //public class DetailArrayOfBooks : ICSSoft.STORMNET.DetailArray
+    //{
+    //    public DetailArrayOfBooks(BookLibrary.Domain.Entities.user fuser) :
+    //            base(typeof(book), ((ICSSoft.STORMNET.DataObject)(fuser)))
+    //    {
+    //    }
 
-        public BookLibrary.Domain.Entities.book this[int index]
-        {
-            get
-            {
-                return ((BookLibrary.Domain.Entities.book)(this.ItemByIndex(index)));
-            }
-        }
+    //    public BookLibrary.Domain.Entities.book this[int index]
+    //    {
+    //        get
+    //        {
+    //            return ((BookLibrary.Domain.Entities.book)(this.ItemByIndex(index)));
+    //        }
+    //    }
 
-        public virtual void Add(BookLibrary.Domain.Entities.book dataobject)
-        {
-            this.AddObject(((ICSSoft.STORMNET.DataObject)(dataobject)));
-        }
+    //    public virtual void Add(BookLibrary.Domain.Entities.book dataobject)
+    //    {
+    //        this.AddObject(((ICSSoft.STORMNET.DataObject)(dataobject)));
+    //    }
 
-    }
+    //}
 }

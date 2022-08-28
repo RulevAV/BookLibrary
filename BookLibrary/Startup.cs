@@ -34,6 +34,7 @@ using Microsoft.IdentityModel.Tokens;
 using BookLibrary.Service;
 using BookLibrary.Domain.Repositories.Abstract;
 using BookLibrary.Domain.Repositories.FlexberryMethod;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace BookLibrary
 {
@@ -99,6 +100,7 @@ namespace BookLibrary
             services.AddTransient<IError, Error>();
             services.AddTransient<IBook, Book>();
             services.AddTransient<IMeeting, Meeting>();
+            services.AddTransient<IImage, Image>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

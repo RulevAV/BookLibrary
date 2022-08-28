@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http.Features;
+using Grpc.Core;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -40,6 +42,9 @@ namespace BookLibrary.Controllers
         [HttpPost]
         public void Post([FromBody] error _error)
         {
+            var remoteIpAddress = Request.HttpContext.Connection.RemoteIpAddress;
+            _error.ipClient = remoteIpAddress.ToString();
+            _error.dateEerror = DateTime.Now;
             dataContext.add(_error);
         }
     }

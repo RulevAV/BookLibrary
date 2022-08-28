@@ -10,7 +10,7 @@ namespace BookLibrary.Domain.Entities
         public string lastName { get; set; }
         public string patronymic { get; set; }
 
-        private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
+        //private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
 
         public void SetProperties(speaker _speaker)
         {
@@ -19,22 +19,22 @@ namespace BookLibrary.Domain.Entities
             this.patronymic = _speaker.patronymic;
         }
 
-        public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
-        {
-            get
-            {
-                if ((this.freport == null))
-                {
-                    this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
-                }
-                BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
-                return result;
-            }
-            set
-            {
-                this.freport = value;
-            }
-        }
+        //public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
+        //{
+        //    get
+        //    {
+        //        if ((this.freport == null))
+        //        {
+        //            this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
+        //        }
+        //        BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
+        //        return result;
+        //    }
+        //    set
+        //    {
+        //        this.freport = value;
+        //    }
+        //}
 
         public class Views
         {

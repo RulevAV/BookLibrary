@@ -19,7 +19,7 @@ namespace BookLibrary.Controllers
     public class meetingsController : ControllerBase
     {
         IMeeting dataContext;
-        public meetingsController(IMeeting dataContext)
+        public meetingsController(IMeeting dataContext, IReport dataContextReport)
         {
             this.dataContext = dataContext;
         }

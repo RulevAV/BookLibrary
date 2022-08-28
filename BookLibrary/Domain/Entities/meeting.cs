@@ -8,29 +8,30 @@ namespace BookLibrary.Domain.Entities
     {
         public DateTime dateMeeting { get; set; }
 
-        private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
+        //private BookLibrary.Domain.Entities.DetailArrayOfReports freport;
 
         public void SetProperties(meeting _meeting)
         {
             this.dateMeeting = _meeting.dateMeeting;
         }
+        public report[] reports { get; set; }
 
-        public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
-        {
-            get
-            {
-                if ((this.freport == null))
-                {
-                    this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
-                }
-                BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
-                return result;
-            }
-            set
-            {
-                this.freport = value;
-            }
-        }
+        //public virtual BookLibrary.Domain.Entities.DetailArrayOfReports reports
+        //{
+        //    get
+        //    {
+        //        if ((this.freport == null))
+        //        {
+        //            this.freport = new BookLibrary.Domain.Entities.DetailArrayOfReports(this);
+        //        }
+        //        BookLibrary.Domain.Entities.DetailArrayOfReports result = this.freport;
+        //        return result;
+        //    }
+        //    set
+        //    {
+        //        this.freport = value;
+        //    }
+        //}
 
         public class Views
         {

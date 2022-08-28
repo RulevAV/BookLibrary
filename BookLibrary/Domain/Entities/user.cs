@@ -9,7 +9,7 @@ namespace BookLibrary.Domain.Entities
         public string username { get; set; }
         public string password { get; set; }
 
-        private BookLibrary.Domain.Entities.DetailArrayOfBooks fbooks;
+        //private BookLibrary.Domain.Entities.DetailArrayOfBooks fbooks;
         public void SetProperties(user _user)
         {
             this.email = _user.email;
@@ -31,21 +31,21 @@ namespace BookLibrary.Domain.Entities
             }
         }
 
-        public virtual BookLibrary.Domain.Entities.DetailArrayOfBooks books
-        {
-            get
-            {
-                if ((this.fbooks == null))
-                {
-                    this.fbooks = new BookLibrary.Domain.Entities.DetailArrayOfBooks(this);
-                }
-                BookLibrary.Domain.Entities.DetailArrayOfBooks result = this.fbooks;
-                return result;
-            }
-            set
-            {
-                this.fbooks = value;
-            }
-        }
+        //public virtual BookLibrary.Domain.Entities.DetailArrayOfBooks books
+        //{
+        //    get
+        //    {
+        //        if ((this.fbooks == null))
+        //        {
+        //            this.fbooks = new BookLibrary.Domain.Entities.DetailArrayOfBooks(this);
+        //        }
+        //        BookLibrary.Domain.Entities.DetailArrayOfBooks result = this.fbooks;
+        //        return result;
+        //    }
+        //    set
+        //    {
+        //        this.fbooks = value;
+        //    }
+        //}
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BookLibrary.Domain.Entities;
 using BookLibrary.Domain.Repositories.Abstract;
-using BookLibrary.Models;
 using ICSSoft.STORMNET;
 using ICSSoft.STORMNET.Business;
 using ICSSoft.STORMNET.Business.LINQProvider;
@@ -29,14 +28,13 @@ namespace BookLibrary.Domain.Repositories.FlexberryMethod
 
         public book add(book _book, Guid id)
         {
-            _book.tags = null;
-
             user _user = new user();
             _user.SetExistObjectPrimaryKey(id);
             ds.LoadObject(_user);
 
+            _book.user = _user;
             //var _user = new user();
-            _user.books.Add(_book);
+            //_user.books.Add(_book);
 
             var p = new DataObject[] { _book, _user };
 
@@ -45,7 +43,7 @@ namespace BookLibrary.Domain.Repositories.FlexberryMethod
             return _book;
         }
 
-        public book update(Guid id, BookModel _book)
+        public book update(Guid id, book _book)
         {
             book book = new book();
             book.SetExistObjectPrimaryKey(id);
@@ -53,12 +51,12 @@ namespace BookLibrary.Domain.Repositories.FlexberryMethod
 
             book.name = _book.name;
             book.author = _book.author;
-            book.suauthormPages = _book.suauthormPages;
+            book.sumPages = _book.sumPages;
             book.tags = _book.tags;
             book.averageRating = _book.averageRating;
             book.URLcover = _book.URLcover;
             book.URLDescription = _book.URLDescription;
-            
+
             book.SetStatus(ObjectStatus.Altered);
             ds.UpdateObject(book);//Добавить Объект
 

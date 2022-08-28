@@ -33,23 +33,26 @@ namespace BookLibrary.Controllers
 
         // GET: api/<booksController>
         [HttpGet]
-        public IEnumerable<book> Get()
+        public IEnumerable<BookModel> Get()
         {
-            return dataContext.getAll();
+            var temp = dataContext.getAll();
+            return dataContext.getAll().Select(u=>new BookModel(u));
         }
 
         // GET api/<booksController>/5
         [HttpGet("{id}")]
-        public book Get(Guid id)
+        public BookModel Get(Guid id)
         {
-            return dataContext.getId(id);
+            return new BookModel(dataContext.getId(id));
         }
 
         // POST api/<booksController>
         [HttpPost]
         [Authorize]
-        public IActionResult Post([FromBody] book _book)
+        public IActionResult Post([FromBody] BookModel model)
         {
+            var _book = new book();
+            _book = model;
             var id = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
             dataContext.add(_book, Guid.Parse(id));
             return Ok(new { __PrimaryKey = new { guid = _book.__PrimaryKey } });

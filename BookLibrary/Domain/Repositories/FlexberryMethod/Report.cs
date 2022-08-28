@@ -37,7 +37,7 @@ namespace BookLibrary.Domain.Repositories.FlexberryMethod
             report report = new report();
             report.SetExistObjectPrimaryKey(id);
             ds.LoadObject(report);
-            report.SetProperties(_report);
+            //report.SetProperties(_report);
             report.SetStatus(ObjectStatus.Altered);
             ds.UpdateObject(report);//Добавить Объект
 

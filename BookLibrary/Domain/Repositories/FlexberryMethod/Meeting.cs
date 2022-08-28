@@ -16,7 +16,13 @@ namespace BookLibrary.Domain.Repositories.FlexberryMethod
 
         public List<meeting> getAll()
         {
-            return ds.Query<meeting>(meeting.Views.meetingL).ToList();
+            var data = ds.Query<meeting>(meeting.Views.meetingL).ToList();
+            foreach (var m in data)
+            {
+                var temp = ds.Query<report>(report.Views.reportL).First();
+                m.reports = ds.Query<report>(report.Views.reportL).Where(r => r.meeting == m).ToArray();
+            }
+            return data;
         }
 
         public meeting getId(Guid id)
@@ -31,6 +37,8 @@ namespace BookLibrary.Domain.Repositories.FlexberryMethod
         {
             var _meeting = new meeting();
             _meeting.dateMeeting = newMeeting.dateMeeting;
+
+           // _book.user = _user;
 
             ds.UpdateObject(_meeting);//Добавить Объект
             return _meeting;

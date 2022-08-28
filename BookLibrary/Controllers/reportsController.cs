@@ -1,5 +1,6 @@
 ﻿using BookLibrary.Domain.Entities;
 using BookLibrary.Domain.Repositories.Abstract;
+using BookLibrary.Models;
 using ICSSoft.STORMNET;
 using ICSSoft.STORMNET.Business;
 using ICSSoft.STORMNET.Business.LINQProvider;
@@ -40,11 +41,11 @@ namespace BookLibrary.Controllers
         // POST
         [HttpPost]
         [Authorize]
-        public IActionResult Post(object _report)
+        public IActionResult Post(report model)
         {
-            var _book = new book();
-            var _meeting = new meeting();
-            var _speaker = new speaker();
+            //var _book = new book();
+            //var _meeting = new meeting();
+            //var _speaker = new speaker();
 
             //_book.reports.Add(_report);
             //_meeting.reports.Add(_report);
@@ -52,8 +53,11 @@ namespace BookLibrary.Controllers
 
             //var p = new DataObject[] { _report, _book, _meeting , _speaker };
 
-           // dataContext.add(_report);
-            return Ok();
+            var _report = new report();
+            _report = model;
+
+            var newReport = dataContext.add(_report);
+            return Ok(new { __PrimaryKey = new { guid = newReport.__PrimaryKey } });
         }
 
         // PUT
